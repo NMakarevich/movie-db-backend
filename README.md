@@ -22,3 +22,18 @@ npm run prisma:dev
 ```bash
 npm run start: dev
 ```
+
+## Endpoints
+
+### /api/auth
+1. POST /signup
+2. POST /login
+
+### /api/user
+1. GET /:id 
+2. PATCH /:id
+3. DELETE /:id
+
+### /api/favourites
+1. PATCH /add
+2. PATCH /delete
