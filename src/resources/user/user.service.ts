@@ -41,7 +41,11 @@ export class UserService {
     const isMatchPassword = await bcrypt.compare(updateUserDto.oldPassword, user.password);
     if (isMatchPassword) {
       const newHash = await bcrypt.hash(updateUserDto.newPassword, SALT);
-      return this.prismaService.user.update({ where: { id }, data: { password: newHash } });
+      return this.prismaService.user.update({
+        where: { id },
+        data: { password: newHash },
+        omit: { password: true },
+      });
     } else throw new HttpException('Password are not match', HttpStatus.CONFLICT);
   }
 
