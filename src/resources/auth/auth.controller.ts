@@ -7,10 +7,12 @@ import {
   ClassSerializerInterceptor,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { Public } from './jwt-auth.guard';
+import { LocalAuthGuard } from './local-auth.guard';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Public()
@@ -24,6 +26,7 @@ export class AuthController {
     return this.authService.signUp(createUserDto);
   }
 
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   async login(@Request() req) {

@@ -29,10 +29,10 @@ import { PrismaModule } from '../../prisma/prisma.module';
     UserService,
     LocalStrategy,
     JwtStrategy,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AuthModule {}
