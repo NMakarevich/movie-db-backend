@@ -84,7 +84,7 @@ Responses:
 ```
 
 ### /api/user
-1. GET /:id
+1. GET
 
 Responses:
 
