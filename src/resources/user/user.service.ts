@@ -24,11 +24,13 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    return this.prismaService.user.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: { id },
       omit: { password: true },
       include: { favourites: true },
     });
+    if (!user) throw new HttpException('User is not found', HttpStatus.NOT_FOUND);
+    return user;
   }
 
   async findOneByLogin(login: string) {
