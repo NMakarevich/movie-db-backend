@@ -25,6 +25,9 @@ npm run start: dev
 
 ## Endpoints
 
+### /doc
+Swagger documentation with requests example
+
 ### /api/auth
 1. POST /signup
 
