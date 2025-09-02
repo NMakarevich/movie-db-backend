@@ -5,9 +5,11 @@ import { JwtService } from '@nestjs/jwt';
 import 'dotenv/config';
 import * as process from 'node:process';
 import { DEFAULT_VALUES } from '../../constants';
+import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 const JWT_SECRET = process.env.JWT_SECRET || DEFAULT_VALUES.jwtSecret;
 
+@ApiBearerAuth()
 @Controller('favourites')
 export class FavouritesController {
   constructor(
@@ -15,6 +17,30 @@ export class FavouritesController {
     private readonly jwt: JwtService,
   ) {}
 
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
+        },
+        moviesIds: {
+          type: '[string]',
+          example: ['movie-id'],
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
   @Get()
   @HttpCode(HttpStatus.OK)
   async getFavourites(@Headers('authorization') authorization: string) {
@@ -22,6 +48,41 @@ export class FavouritesController {
     return this.favouritesService.getOne(userId);
   }
 
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          example: 'movie-id',
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
+        },
+        moviesIds: {
+          type: '[string]',
+          example: ['movie-id'],
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
   @Patch('/add')
   @HttpCode(HttpStatus.OK)
   async addToFavourites(
@@ -32,6 +93,41 @@ export class FavouritesController {
     return this.favouritesService.addToFavourites(userId, updateFavouritesDto);
   }
 
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          example: 'movie-id',
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
+        },
+        moviesIds: {
+          type: '[string]',
+          example: [],
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
   @Patch('/delete')
   @HttpCode(HttpStatus.OK)
   async deleteFromFavourites(

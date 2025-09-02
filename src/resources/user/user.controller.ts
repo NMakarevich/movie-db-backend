@@ -18,9 +18,18 @@ import { JwtService } from '@nestjs/jwt';
 import * as process from 'node:process';
 import { DEFAULT_VALUES } from '../../constants';
 import 'dotenv/config';
+import {
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 const JWT_SECRET = process.env.JWT_SECRET || DEFAULT_VALUES.jwtSecret;
 
+@ApiBearerAuth()
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UserController {
@@ -29,6 +38,45 @@ export class UserController {
     private readonly jwt: JwtService,
   ) {}
 
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
+        },
+        login: {
+          type: 'string',
+          example: 'johnDoe',
+        },
+        firstName: {
+          type: 'string',
+          example: 'John',
+        },
+        lastName: {
+          type: 'string',
+          example: 'Doe',
+        },
+        favourites: {
+          type: 'array',
+          items: {
+            type: 'string',
+            example: [],
+          },
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
   @Get()
   @HttpCode(HttpStatus.OK)
   async findOne(@Headers('authorization') authorization: string) {
@@ -36,12 +84,100 @@ export class UserController {
     return this.userService.findOne(userId);
   }
 
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+          example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
+        },
+        login: {
+          type: 'string',
+          example: 'johnDoe',
+        },
+        firstName: {
+          type: 'string',
+          example: 'John',
+        },
+        lastName: {
+          type: 'string',
+          example: 'Doe',
+        },
+        favourites: {
+          type: 'array',
+          items: {
+            type: 'string',
+            example: [],
+          },
+        },
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: {
+          type: 'number',
+          example: 404,
+        },
+        message: {
+          type: 'string',
+          example: 'User is not found',
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
+  @ApiConflictResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 409 },
+        message: { type: 'string', example: 'Password are not match' },
+      },
+    },
+  })
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
+  @ApiNoContentResponse()
+  @ApiNotFoundResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: {
+          type: 'number',
+          example: 404,
+        },
+        message: {
+          type: 'string',
+          example: 'User is not found',
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
