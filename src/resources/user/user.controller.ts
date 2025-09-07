@@ -3,9 +3,7 @@ import {
   Get,
   Body,
   Patch,
-  Param,
   Delete,
-  ParseUUIDPipe,
   ClassSerializerInterceptor,
   UseInterceptors,
   HttpCode,
@@ -14,7 +12,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as process from 'node:process';
 import { DEFAULT_VALUES } from '../../constants';
@@ -176,10 +174,14 @@ export class UserController {
       },
     },
   })
-  @Patch(':id')
+  @Patch()
   @HttpCode(HttpStatus.OK)
-  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  async updatePassword(
+    @Headers('authorization') authorization: string,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ) {
+    const userId = await this.extractUserId(authorization);
+    return this.userService.updatePassword(userId, updatePasswordDto);
   }
 
   @ApiNoContentResponse()
@@ -207,10 +209,11 @@ export class UserController {
       },
     },
   })
-  @Delete(':id')
+  @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.userService.remove(id);
+  async remove(@Headers('authorization') authorization: string) {
+    const userId = await this.extractUserId(authorization);
+    return this.userService.remove(userId);
   }
 
   private async extractUserId(authorization: string) {

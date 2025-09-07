@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 import * as bcrypt from 'bcrypt';
 import 'dotenv/config';
 import * as process from 'node:process';
@@ -37,12 +37,12 @@ export class UserService {
     return this.prismaService.user.findUnique({ where: { login } });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
     const user = await this.prismaService.user.findUnique({ where: { id } });
     if (!user) throw new HttpException('User is not found', HttpStatus.NOT_FOUND);
-    const isMatchPassword = await bcrypt.compare(updateUserDto.oldPassword, user.password);
+    const isMatchPassword = await bcrypt.compare(updatePasswordDto.oldPassword, user.password);
     if (isMatchPassword) {
-      const newHash = await bcrypt.hash(updateUserDto.newPassword, SALT);
+      const newHash = await bcrypt.hash(updatePasswordDto.newPassword, SALT);
       return this.prismaService.user.update({
         where: { id },
         data: { password: newHash },
