@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Headers,
+  Post,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,12 +21,14 @@ import { DEFAULT_VALUES } from '../../constants';
 import 'dotenv/config';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConflictResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { Public } from '../auth/jwt-auth.guard';
 
 const JWT_SECRET = process.env.JWT_SECRET || DEFAULT_VALUES.jwtSecret;
 
@@ -82,6 +85,32 @@ export class UserController {
   async findOne(@Headers('authorization') authorization: string) {
     const userId = await this.extractUserId(authorization);
     return this.userService.findOne(userId);
+  }
+
+  @Public()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        login: {
+          type: 'string',
+          example: 'johnDoe',
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        isTaken: { type: 'boolean', example: false },
+      },
+    },
+  })
+  @Post('/check')
+  async isTakenLogin(@Body() { login }: { login: string }) {
+    const user = await this.userService.findOneByLogin(login);
+    return { isTaken: !!user };
   }
 
   @ApiOkResponse({
