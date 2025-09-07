@@ -60,10 +60,16 @@ export class UserController {
           example: 'Doe',
         },
         favourites: {
-          type: 'array',
-          items: {
-            type: 'string',
-            example: [],
+          type: 'object',
+          properties: {
+            movieIds: {
+              type: 'array',
+              example: [],
+            },
+            personIds: {
+              type: 'array',
+              example: [],
+            },
           },
         },
       },
@@ -132,10 +138,16 @@ export class UserController {
           example: 'Doe',
         },
         favourites: {
-          type: 'array',
-          items: {
-            type: 'string',
-            example: [],
+          type: 'object',
+          properties: {
+            movieIds: {
+              type: 'array',
+              example: [],
+            },
+            personIds: {
+              type: 'array',
+              example: [],
+            },
           },
         },
       },
