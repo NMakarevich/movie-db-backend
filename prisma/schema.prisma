@@ -24,7 +24,8 @@ model User {
 }
 
 model Favourites {
-  id       String   @id @unique
-  movieIds String[]
-  User     User     @relation(fields: [id], references: [id], onDelete: Cascade)
+  id        String   @id @unique
+  movieIds  String[]
+  personIds String[]
+  User      User     @relation(fields: [id], references: [id], onDelete: Cascade)
 }
