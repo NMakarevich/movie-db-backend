@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { requestApi } from './middlewares/request-api.middleware';
-import { ValidationPipe } from '@nestjs/common';
+import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import 'reflect-metadata';
 import 'dotenv/config';
 import * as process from 'node:process';
@@ -10,7 +9,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(requestApi);
+  app.setGlobalPrefix('api', { exclude: [{ path: 'doc', method: RequestMethod.ALL }] });
   app.useGlobalPipes(new ValidationPipe());
   const port = Number(process.env.PORT) || DEFAULT_VALUES.port;
 
