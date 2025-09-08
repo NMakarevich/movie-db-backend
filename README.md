@@ -114,7 +114,24 @@ Responses:
 }
 ```
 
-2. PATCH /:id
+2. POST /check
+
+Request: 
+```json
+{
+  "login": "johnDoe"
+}
+```
+
+Response: 
+- Status code: 200
+```json
+{
+  "isTaken": true
+}
+```
+
+3. PATCH
 
 Request:
 ```json
@@ -159,7 +176,7 @@ Responses:
 }
 ```
 
-3. DELETE /:id
+4. DELETE
 
 Responses:
 - Status code: 204
@@ -190,6 +207,9 @@ Responses:
   "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
   "movieIds": [
     "movie-id"
+  ],
+  "personIds": [
+    "person-id"
   ]
 }
 ```
@@ -202,7 +222,7 @@ Responses:
 }
 ```
 
-2. PATCH /add
+2. PATCH /movie/add
 
 Request:
 ```json
@@ -218,7 +238,8 @@ Responses:
     "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
     "movieIds": [
         "movie-id"
-    ]
+    ],
+    "personIds": []
 }
 ```
 
@@ -230,7 +251,7 @@ Responses:
 }
 ```
 
-3. PATCH /delete
+3. PATCH /movie/delete
 
 Request:
 ```json
@@ -244,7 +265,62 @@ Responses:
 ```json
 {
     "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
-    "movieIds": []
+    "movieIds": [],
+    "personIds": []
+}
+```
+
+- Status code: 401
+```json
+{
+  "message": "Unauthorized",
+  "statusCode": 401
+}
+```
+
+4. PATCH /persons/add
+
+Request:
+```json
+{
+  "id": "person-id"
+}
+```
+
+Responses:
+- Status code: 200
+```json
+{
+    "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
+    "movieIds": [],
+    "personIds": ["person-id"]
+}
+```
+
+- Status code: 401
+```json
+{
+  "message": "Unauthorized",
+  "statusCode": 401
+}
+```
+
+5. PATCH /persons/delete
+
+Request:
+```json
+{
+  "id": "person-id"
+}
+```
+
+Responses:
+- Status code: 200
+```json
+{
+    "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
+    "movieIds": [],
+    "personIds": []
 }
 ```
 
