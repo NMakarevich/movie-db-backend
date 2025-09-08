@@ -11,6 +11,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api', { exclude: [{ path: 'doc', method: RequestMethod.ALL }] });
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
   const port = Number(process.env.PORT) || DEFAULT_VALUES.port;
 
   const config = new DocumentBuilder()
