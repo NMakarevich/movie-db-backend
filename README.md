@@ -20,7 +20,7 @@ npm run prisma:dev
 ```
 3. Run server
 ```bash
-npm run start: dev
+npm run start:dev
 ```
 
 ## Endpoints
