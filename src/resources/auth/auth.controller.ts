@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
@@ -22,7 +23,6 @@ import {
 } from '@nestjs/swagger';
 
 @UseInterceptors(ClassSerializerInterceptor)
-@Public()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -60,6 +60,7 @@ export class AuthController {
       },
     },
   })
+  @Public()
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
   async signup(@Body() createUserDto: CreateUserDto) {
@@ -97,9 +98,14 @@ export class AuthController {
     },
   })
   @UseGuards(LocalAuthGuard)
+  @Public()
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   async login(@Request() req) {
     return this.authService.login(req.body);
   }
+
+  @Get('/check')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  checkToken() {}
 }
