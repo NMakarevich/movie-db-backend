@@ -17,7 +17,7 @@ export class UserService {
     const hash = await bcrypt.hash(createUserDto.password, SALT);
     const user = await this.findOneByLogin(createUserDto.login);
     if (user) throw new HttpException('User already exists', HttpStatus.CONFLICT);
-    const { login, firstName, lastName } = user;
+    const { login, firstName, lastName } = createUserDto;
     return this.prismaService.user.create({
       data: { login, firstName, lastName, password: hash },
       omit: { password: true },
