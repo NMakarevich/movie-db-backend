@@ -76,6 +76,40 @@ export class FavouritesController {
 
   @ApiOkResponse({
     schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
+          },
+          label: {
+            type: 'string',
+            example: 'Want to watch',
+          },
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 401 },
+        message: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
+  @Get('/labels')
+  @HttpCode(HttpStatus.OK)
+  async getLabels(@Headers('authorization') authorization: string) {
+    const userId = await this.extractUserId(authorization);
+    return this.favouritesService.getLabels(userId);
+  }
+
+  @ApiOkResponse({
+    schema: {
       type: 'object',
       properties: {
         id: {
