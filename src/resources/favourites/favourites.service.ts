@@ -13,6 +13,16 @@ export class FavouritesService {
     });
   }
 
+  async getLabels(userId: string) {
+    return this.prismaService.favourites.findMany({
+      where: { userId },
+      select: {
+        label: true,
+        id: true,
+      },
+    });
+  }
+
   async getOne(id: string) {
     return this.prismaService.favourites.findUnique({
       where: { id },
