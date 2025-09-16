@@ -19,7 +19,15 @@ export class UserService {
     if (user) throw new HttpException('User already exists', HttpStatus.CONFLICT);
     const { login, firstName, lastName } = createUserDto;
     return this.prismaService.user.create({
-      data: { login, firstName, lastName, password: hash },
+      data: {
+        login,
+        firstName,
+        lastName,
+        password: hash,
+        favourites: {
+          create: [{ label: 'Favourites' }, { label: 'Watchlist' }],
+        },
+      },
       omit: { password: true },
     });
   }
