@@ -15,17 +15,18 @@ datasource db {
 }
 
 model User {
-  id         String      @id @default(uuid())
-  login      String      @unique
+  id         String       @id @default(uuid())
+  login      String       @unique
   firstName  String
   lastName   String
   password   String
-  favourites Favourites?
+  favourites Favourites[]
 }
 
 model Favourites {
-  id        String   @id @unique
-  movieIds  String[]
-  personIds String[]
-  User      User     @relation(fields: [id], references: [id], onDelete: Cascade)
+  id     String   @id @default(uuid())
+  label  String
+  ids    String[] @default([])
+  User   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 }

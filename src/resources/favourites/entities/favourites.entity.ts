@@ -1,4 +1,6 @@
 export class FavouritesEntity {
   id: string;
-  movieIds: string[];
+  label: string;
+  ids: string[];
+  userId: string;
 }
