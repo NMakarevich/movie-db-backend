@@ -1,11 +1,29 @@
-import { Body, Controller, Patch, Headers, HttpCode, HttpStatus, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Patch,
+  Headers,
+  HttpCode,
+  HttpStatus,
+  Get,
+  Post,
+  Param,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { FavouritesService } from './favourites.service';
 import { UpdateFavouritesDto } from './dto/update-favourites.dto';
 import { JwtService } from '@nestjs/jwt';
 import 'dotenv/config';
 import * as process from 'node:process';
 import { DEFAULT_VALUES } from '../../constants';
-import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { CreateListDto } from './dto/create-list.dto';
 
 const JWT_SECRET = process.env.JWT_SECRET || DEFAULT_VALUES.jwtSecret;
 
@@ -19,15 +37,23 @@ export class FavouritesController {
 
   @ApiOkResponse({
     schema: {
-      type: 'object',
+      type: 'array',
       properties: {
         id: {
           type: 'string',
           example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
         },
-        moviesIds: {
+        label: {
+          type: 'string',
+          example: 'Want to watch',
+        },
+        ids: {
           type: '[string]',
           example: ['movie-id'],
+        },
+        userId: {
+          type: 'string',
+          example: '484c3d98-2ade-470a-bb3b-fc26e1861104',
         },
       },
     },
@@ -45,20 +71,9 @@ export class FavouritesController {
   @HttpCode(HttpStatus.OK)
   async getFavourites(@Headers('authorization') authorization: string) {
     const userId = await this.extractUserId(authorization);
-    return this.favouritesService.getOne(userId);
+    return this.favouritesService.getAll(userId);
   }
 
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        id: {
-          type: 'string',
-          example: 'movie-id',
-        },
-      },
-    },
-  })
   @ApiOkResponse({
     schema: {
       type: 'object',
@@ -67,13 +82,17 @@ export class FavouritesController {
           type: 'string',
           example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
         },
-        moviesIds: {
+        label: {
+          type: 'string',
+          example: 'Want to watch',
+        },
+        ids: {
           type: '[string]',
           example: ['movie-id'],
         },
-        personIds: {
-          type: '[string]',
-          example: [],
+        userId: {
+          type: 'string',
+          example: '484c3d98-2ade-470a-bb3b-fc26e1861104',
         },
       },
     },
@@ -87,28 +106,14 @@ export class FavouritesController {
       },
     },
   })
-  @Patch('/movie/add')
+  @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  async addMovieToFavourites(
-    @Body() updateFavouritesDto: UpdateFavouritesDto,
-    @Headers('authorization') authorization: string,
-  ) {
-    const userId = await this.extractUserId(authorization);
-    return this.favouritesService.addMovieToFavourites(userId, updateFavouritesDto);
+  async getFavourite(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.favouritesService.getOne(id);
   }
 
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        id: {
-          type: 'string',
-          example: 'movie-id',
-        },
-      },
-    },
-  })
-  @ApiOkResponse({
+  @ApiBody({ type: CreateListDto })
+  @ApiCreatedResponse({
     schema: {
       type: 'object',
       properties: {
@@ -116,9 +121,17 @@ export class FavouritesController {
           type: 'string',
           example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
         },
-        moviesIds: {
+        label: {
+          type: 'string',
+          example: 'Want to watch',
+        },
+        ids: {
           type: '[string]',
           example: [],
+        },
+        userId: {
+          type: 'string',
+          example: '484c3d98-2ade-470a-bb3b-fc26e1861104',
         },
       },
     },
@@ -132,27 +145,17 @@ export class FavouritesController {
       },
     },
   })
-  @Patch('/movie/delete')
-  @HttpCode(HttpStatus.OK)
-  async deleteMovieFromFavourites(
-    @Body() updateFavouritesDto: UpdateFavouritesDto,
+  @Post('/new')
+  @HttpCode(HttpStatus.CREATED)
+  async createList(
     @Headers('authorization') authorization: string,
+    @Body() createListDto: CreateListDto,
   ) {
     const userId = await this.extractUserId(authorization);
-    return this.favouritesService.deleteMovieFromFavourites(userId, updateFavouritesDto);
+    return this.favouritesService.createList(userId, createListDto);
   }
 
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        id: {
-          type: 'string',
-          example: 'movie-id',
-        },
-      },
-    },
-  })
+  @ApiBody({ type: UpdateFavouritesDto })
   @ApiOkResponse({
     schema: {
       type: 'object',
@@ -161,13 +164,17 @@ export class FavouritesController {
           type: 'string',
           example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
         },
-        moviesIds: {
+        label: {
+          type: 'string',
+          example: 'Want to watch',
+        },
+        ids: {
           type: '[string]',
           example: ['movie-id'],
         },
-        personIds: {
-          type: '[string]',
-          example: [],
+        userId: {
+          type: 'string',
+          example: '484c3d98-2ade-470a-bb3b-fc26e1861104',
         },
       },
     },
@@ -181,27 +188,13 @@ export class FavouritesController {
       },
     },
   })
-  @Patch('/persons/add')
+  @Patch('/add')
   @HttpCode(HttpStatus.OK)
-  async addPersonToFavourites(
-    @Body() updateFavouritesDto: UpdateFavouritesDto,
-    @Headers('authorization') authorization: string,
-  ) {
-    const userId = await this.extractUserId(authorization);
-    return this.favouritesService.addPersonToFavourites(userId, updateFavouritesDto);
+  async addMovieToFavourites(@Body() updateFavouritesDto: UpdateFavouritesDto) {
+    return this.favouritesService.addToFavourites(updateFavouritesDto);
   }
 
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        id: {
-          type: 'string',
-          example: 'movie-id',
-        },
-      },
-    },
-  })
+  @ApiBody({ type: UpdateFavouritesDto })
   @ApiOkResponse({
     schema: {
       type: 'object',
@@ -210,9 +203,17 @@ export class FavouritesController {
           type: 'string',
           example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
         },
-        moviesIds: {
+        label: {
+          type: 'string',
+          example: 'Want to watch',
+        },
+        ids: {
           type: '[string]',
           example: [],
+        },
+        userId: {
+          type: 'string',
+          example: '484c3d98-2ade-470a-bb3b-fc26e1861104',
         },
       },
     },
@@ -226,14 +227,10 @@ export class FavouritesController {
       },
     },
   })
-  @Patch('/persons/delete')
+  @Patch('/delete')
   @HttpCode(HttpStatus.OK)
-  async deletePersonFromFavourites(
-    @Body() updateFavouritesDto: UpdateFavouritesDto,
-    @Headers('authorization') authorization: string,
-  ) {
-    const userId = await this.extractUserId(authorization);
-    return this.favouritesService.deletePersonFromFavourites(userId, updateFavouritesDto);
+  async deleteFromFavourites(@Body() updateFavouritesDto: UpdateFavouritesDto) {
+    return this.favouritesService.deleteFromFavourites(updateFavouritesDto);
   }
 
   private async extractUserId(authorization: string) {
