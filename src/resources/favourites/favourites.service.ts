@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UpdateFavouritesDto } from './dto/update-favourites.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateListDto } from './dto/create-list.dto';
@@ -36,7 +36,8 @@ export class FavouritesService {
   async addToFavourites(updateFavouritesDto: UpdateFavouritesDto) {
     const { id, contentId } = updateFavouritesDto;
     const list = await this.getOne(id);
-    if (list.ids.includes(contentId)) return list;
+    if (list.ids.includes(contentId))
+      throw new HttpException('Item already in favourites', HttpStatus.CONFLICT);
     else
       return this.prismaService.favourites.update({
         where: { id },
