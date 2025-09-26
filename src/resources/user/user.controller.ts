@@ -60,15 +60,26 @@ export class UserController {
           example: 'Doe',
         },
         favourites: {
-          type: 'object',
-          properties: {
-            movieIds: {
-              type: 'array',
-              example: [],
-            },
-            personIds: {
-              type: 'array',
-              example: [],
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                example: '73ae9c82-8c7c-4022-a06a-da794686a718',
+              },
+              label: {
+                type: 'string',
+                example: 'Watchlist',
+              },
+              ids: {
+                type: '[string]',
+                example: [],
+              },
+              userId: {
+                type: 'string',
+                example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
+              },
             },
           },
         },
@@ -138,15 +149,26 @@ export class UserController {
           example: 'Doe',
         },
         favourites: {
-          type: 'object',
-          properties: {
-            movieIds: {
-              type: 'array',
-              example: [],
-            },
-            personIds: {
-              type: 'array',
-              example: [],
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                example: '73ae9c82-8c7c-4022-a06a-da794686a718',
+              },
+              label: {
+                type: 'string',
+                example: 'Watchlist',
+              },
+              ids: {
+                type: '[string]',
+                example: [],
+              },
+              userId: {
+                type: 'string',
+                example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
+              },
             },
           },
         },

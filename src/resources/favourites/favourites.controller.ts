@@ -38,22 +38,25 @@ export class FavouritesController {
   @ApiOkResponse({
     schema: {
       type: 'array',
-      properties: {
-        id: {
-          type: 'string',
-          example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
-        },
-        label: {
-          type: 'string',
-          example: 'Want to watch',
-        },
-        ids: {
-          type: '[string]',
-          example: ['movie-id'],
-        },
-        userId: {
-          type: 'string',
-          example: '484c3d98-2ade-470a-bb3b-fc26e1861104',
+      items: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            example: '02fad08d-6df2-4d7e-bcf1-1f252bc377b3',
+          },
+          label: {
+            type: 'string',
+            example: 'Want to watch',
+          },
+          ids: {
+            type: '[string]',
+            example: ['movie-id'],
+          },
+          userId: {
+            type: 'string',
+            example: '484c3d98-2ade-470a-bb3b-fc26e1861104',
+          },
         },
       },
     },
@@ -86,7 +89,7 @@ export class FavouritesController {
           },
           label: {
             type: 'string',
-            example: 'Want to watch',
+            example: 'Watchlist',
           },
         },
       },
@@ -118,7 +121,7 @@ export class FavouritesController {
         },
         label: {
           type: 'string',
-          example: 'Want to watch',
+          example: 'Watchlist',
         },
         ids: {
           type: '[string]',
@@ -157,7 +160,7 @@ export class FavouritesController {
         },
         label: {
           type: 'string',
-          example: 'Want to watch',
+          example: 'Watchlist',
         },
         ids: {
           type: '[string]',
@@ -200,7 +203,7 @@ export class FavouritesController {
         },
         label: {
           type: 'string',
-          example: 'Want to watch',
+          example: 'Watchlist',
         },
         ids: {
           type: '[string]',
@@ -239,7 +242,7 @@ export class FavouritesController {
         },
         label: {
           type: 'string',
-          example: 'Want to watch',
+          example: 'Watchlist',
         },
         ids: {
           type: '[string]',
