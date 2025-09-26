@@ -13,7 +13,9 @@ npm i
 ```
 
 ## Run server
-1. Create `.env` file based on `.env.example`
+
+### 1. On local machine directly
+1. Create `.env` file based on `.env.example` and uncomment DATABASE_URL which starts with `prisma+postgres`
 2. Run prisma db
 ```bash
 npm run prisma:dev
@@ -21,6 +23,14 @@ npm run prisma:dev
 3. Run server
 ```bash
 npm run start:dev
+```
+
+### 2. On Docker containers (recommended)
+1. Install and run docker desktop
+2. Create `.env` file based on `.env.example` and uncomment DATABASE_URL which starts with `postgresql`
+3. Run docker compose
+```bash
+docker compose up 
 ```
 
 ## Endpoints
@@ -98,12 +108,20 @@ Responses:
   "login": "johnDoe",
   "firstName": "John",
   "lastName": "Doe",
-  "favourites": {
-    "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
-    "movieIds": [
-      "movie-id"
-    ]
-  }
+  "favourites": [
+    {
+      "id": "f9fb234e-7315-4751-93f4-8809c652c744",
+      "label": "Favourites",
+      "ids": [],
+      "userId": "dba19173-76a1-4217-9c9e-9d431eb9c5fc"
+    },
+    {
+      "id": "73ae9c82-8c7c-4022-a06a-da794686a718",
+      "label": "Watchlist",
+      "ids": [],
+      "userId": "dba19173-76a1-4217-9c9e-9d431eb9c5fc"
+    }
+  ]
 }
 ```
 - Status code: 401 
@@ -203,14 +221,50 @@ Responses:
 Responses:
 - Status code: 200
 ```json
+[
+  {
+    "id": "f9fb234e-7315-4751-93f4-8809c652c744",
+    "label": "Favourites",
+    "ids": [],
+    "userId": "dba19173-76a1-4217-9c9e-9d431eb9c5fc"
+  },
+  {
+    "id": "73ae9c82-8c7c-4022-a06a-da794686a718",
+    "label": "Watchlist",
+    "ids": [],
+    "userId": "dba19173-76a1-4217-9c9e-9d431eb9c5fc"
+  }
+]
+```
+
+- Status code: 401
+```json
+{
+  "message": "Unauthorized",
+  "statusCode": 401
+}
+```
+
+2. PATCH /add
+
+Request:
+```json
+{
+  "contentId": "movie-id",
+  "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3"
+}
+```
+
+Responses:
+- Status code: 200
+```json
 {
   "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
-  "movieIds": [
+  "label": "Watchlist",
+  "ids": [
     "movie-id"
   ],
-  "personIds": [
-    "person-id"
-  ]
+  "userId": "484c3d98-2ade-470a-bb3b-fc26e1861104"
 }
 ```
 
@@ -222,12 +276,13 @@ Responses:
 }
 ```
 
-2. PATCH /movie/add
+3. PATCH /delete
 
 Request:
 ```json
 {
-  "id": "movie-id"
+  "contentId": "movie-id",
+  "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3"
 }
 ```
 
@@ -235,92 +290,10 @@ Responses:
 - Status code: 200
 ```json
 {
-    "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
-    "movieIds": [
-        "movie-id"
-    ],
-    "personIds": []
-}
-```
-
-- Status code: 401
-```json
-{
-  "message": "Unauthorized",
-  "statusCode": 401
-}
-```
-
-3. PATCH /movie/delete
-
-Request:
-```json
-{
-  "id": "movie-id"
-}
-```
-
-Responses:
-- Status code: 200
-```json
-{
-    "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
-    "movieIds": [],
-    "personIds": []
-}
-```
-
-- Status code: 401
-```json
-{
-  "message": "Unauthorized",
-  "statusCode": 401
-}
-```
-
-4. PATCH /persons/add
-
-Request:
-```json
-{
-  "id": "person-id"
-}
-```
-
-Responses:
-- Status code: 200
-```json
-{
-    "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
-    "movieIds": [],
-    "personIds": ["person-id"]
-}
-```
-
-- Status code: 401
-```json
-{
-  "message": "Unauthorized",
-  "statusCode": 401
-}
-```
-
-5. PATCH /persons/delete
-
-Request:
-```json
-{
-  "id": "person-id"
-}
-```
-
-Responses:
-- Status code: 200
-```json
-{
-    "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
-    "movieIds": [],
-    "personIds": []
+  "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
+  "label": "Watchlist",
+  "ids": [],
+  "userId": "484c3d98-2ade-470a-bb3b-fc26e1861104"
 }
 ```
 
