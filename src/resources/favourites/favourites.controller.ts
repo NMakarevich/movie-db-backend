@@ -47,7 +47,7 @@ export class FavouritesController {
           },
           label: {
             type: 'string',
-            example: 'Want to watch',
+            example: 'Watchlist',
           },
           ids: {
             type: '[string]',
