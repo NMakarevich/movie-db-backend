@@ -1,85 +1,306 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# MovieDB Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Installation
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
+1. Clone repository
+2. Move to develop branch 
 ```bash
-$ npm install
+git checkout develop
+```
+3. Install packages
+```bash
+npm i
 ```
 
-## Compile and run the project
+## Run server
 
+### 1. On local machine directly
+1. Create `.env` file based on `.env.example` and uncomment DATABASE_URL which starts with `prisma+postgres`
+2. Run prisma db
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run prisma:dev
+```
+3. Run server
+```bash
+npm run start:dev
 ```
 
-## Run tests
-
+### 2. On Docker containers (recommended)
+1. Install and run docker desktop
+2. Create `.env` file based on `.env.example` and uncomment DATABASE_URL which starts with `postgresql`
+3. Run docker compose
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up 
 ```
 
-## Resources
+## Endpoints
 
-Check out a few resources that may come in handy when working with NestJS:
+### /doc
+Swagger documentation with requests example
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### /api/auth
+1. POST /signup
 
-## Support
+Request body:
+```json
+{
+  "login": "johnDoe",
+  "firstName": "John",
+  "lastName": "Doe",
+  "password": "john-doe-password"
+}
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Responses:
+- Status code: 201
+```json
+{
+  "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
+  "login": "johnDoe",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+```
 
-## Stay in touch
+- Status code: 409
+```json
+{
+  "statusCode": 409,
+  "message": "User already exists"
+}
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+2. POST /login
 
-## License
+Request: 
+```json
+{
+  "login": "johnDoe",
+  "password": "john-doe-password"
+}
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Responses:
+- Status code: 200
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6Ildhcm5lciIsInVzZXJJZCI6IjNiOGRkNGJmLWUyZTItNGE0NS1iZGQ4LTcyN2Q3ZjJiMmI2ZiIsImlhdCI6MTc1NjY2NzQwMCwiZXhwIjoxNzU2NjcxMDAwfQ.tdccv4RijanLyorXExH6B497aanmHjV4ZoBK8StlxzQ"
+}
+```
+
+- Status code: 401
+```json
+{
+  "statusCode": 401,
+  "message": "Invalid login or/and password"
+}
+```
+
+### /api/user
+1. GET
+
+Responses:
+
+- Status code: 200
+```json
+{
+  "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
+  "login": "johnDoe",
+  "firstName": "John",
+  "lastName": "Doe",
+  "favourites": [
+    {
+      "id": "f9fb234e-7315-4751-93f4-8809c652c744",
+      "label": "Favourites",
+      "ids": [],
+      "userId": "dba19173-76a1-4217-9c9e-9d431eb9c5fc"
+    },
+    {
+      "id": "73ae9c82-8c7c-4022-a06a-da794686a718",
+      "label": "Watchlist",
+      "ids": [],
+      "userId": "dba19173-76a1-4217-9c9e-9d431eb9c5fc"
+    }
+  ]
+}
+```
+- Status code: 401 
+```json
+{
+  "statusCode": 404,
+  "message": "User is not found"
+}
+```
+
+2. POST /check
+
+Request: 
+```json
+{
+  "login": "johnDoe"
+}
+```
+
+Response: 
+- Status code: 200
+```json
+{
+  "isTaken": true
+}
+```
+
+3. PATCH
+
+Request:
+```json
+{
+  "oldPassword": "john-doe-password",
+  "newPassword": "new-password"
+}
+```
+
+Responses:
+- Status code: 200
+```json
+{
+  "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
+  "login": "johnDoe",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+```
+
+- Status code: 401
+```json
+{
+  "message": "Unauthorized",
+  "statusCode": 401
+}
+```
+
+- Status code: 404
+```json
+{
+  "statusCode": 404,
+  "message": "User is not found"
+}
+```
+
+- Status code: 409
+```json
+{
+  "statusCode": 409,
+  "message": "Password are not match"
+}
+```
+
+4. DELETE
+
+Responses:
+- Status code: 204
+- Status code: 401
+```json
+{
+  "message": "Unauthorized",
+  "statusCode": 401
+}
+```
+
+- Status code: 404
+```json
+{
+  "statusCode": 404,
+  "message": "User is not found"
+}
+```
+
+### /api/favourites
+
+1. GET
+
+Responses:
+- Status code: 200
+```json
+[
+  {
+    "id": "f9fb234e-7315-4751-93f4-8809c652c744",
+    "label": "Favourites",
+    "ids": [],
+    "userId": "dba19173-76a1-4217-9c9e-9d431eb9c5fc"
+  },
+  {
+    "id": "73ae9c82-8c7c-4022-a06a-da794686a718",
+    "label": "Watchlist",
+    "ids": [],
+    "userId": "dba19173-76a1-4217-9c9e-9d431eb9c5fc"
+  }
+]
+```
+
+- Status code: 401
+```json
+{
+  "message": "Unauthorized",
+  "statusCode": 401
+}
+```
+
+2. PATCH /add
+
+Request:
+```json
+{
+  "contentId": "movie-id",
+  "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3"
+}
+```
+
+Responses:
+- Status code: 200
+```json
+{
+  "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
+  "label": "Watchlist",
+  "ids": [
+    "movie-id"
+  ],
+  "userId": "484c3d98-2ade-470a-bb3b-fc26e1861104"
+}
+```
+
+- Status code: 401
+```json
+{
+  "message": "Unauthorized",
+  "statusCode": 401
+}
+```
+
+3. PATCH /delete
+
+Request:
+```json
+{
+  "contentId": "movie-id",
+  "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3"
+}
+```
+
+Responses:
+- Status code: 200
+```json
+{
+  "id": "02fad08d-6df2-4d7e-bcf1-1f252bc377b3",
+  "label": "Watchlist",
+  "ids": [],
+  "userId": "484c3d98-2ade-470a-bb3b-fc26e1861104"
+}
+```
+
+- Status code: 401
+```json
+{
+  "message": "Unauthorized",
+  "statusCode": 401
+}
+```
